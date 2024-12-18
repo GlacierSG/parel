@@ -2,6 +2,12 @@
 name = "parel"
 version = "0.1.0"
 edition = "2021"
+authors = ["GlacierSG <glaciersg@proton.me>"]
+description = "Tool to run linux commands in parallel"
+license = "MIT"
+repository = "https://github.com/GlacierSG/parel"
+readme = "README.md"
+keywords = ["parallel","linux"]
 
 [dependencies]
 clap = { version = "4.5.22", features = ["derive"] }
