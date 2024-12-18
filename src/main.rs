@@ -60,7 +60,7 @@ fn precompute_template(command: &String, loaded_wordlist: &Vec<(String, Vec<Stri
 fn gen_command(template: &Vec<(usize, String)>, idx: usize, loaded_wordlist: &Vec<(String, Vec<String>)>, wordlist_lengths: &Vec<usize>) -> String {
     let mut command = String::new();
     let idxs = product(idx, &wordlist_lengths);
-    for tvalue in template {
+    for tvalue in &template[..template.len()-1] {
         command.push_str(&tvalue.1);
         command.push_str(&loaded_wordlist[tvalue.0].1[idxs[tvalue.0]]);
     }
@@ -93,12 +93,12 @@ struct Cli {
     command: String,
     #[arg(short, long, default_value_t=10, help="Number of threads")]
     threads: usize,
-    #[arg(short, long, default_value=None, help="Show nth command that will be executed")]
+    #[arg(short, long, default_value=None, help="Show nth command that will be executed (0 indexed)")]
     show: Option<usize>,
     #[arg(short, long, help="A file and an identifier used in command [example: abc.txt:foo]")]
     file: Vec<String>,
     #[arg(long, help="Don't show command stdout or stderr")]
-    no_output: bool,
+    silent: bool,
     #[arg(short, long, help="Enable progress bar")]
     progress: bool,
     #[arg(long, action = clap::builder::ArgAction::Version)]
@@ -164,13 +164,14 @@ fn main() {
         std::process::exit(0);
     }
     let progress_bar = if args.progress {
-        let mut pb = ProgressBar::new(total_words as u64);
+        let pb = ProgressBar::new(total_words as u64);
         pb.set_style(
             ProgressStyle::default_bar()
-                .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos}/{len} ({percent}%)")
+                .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos}/{len} ({percent}%)")
                 .unwrap()
                 .progress_chars("#>-")
         );
+        pb.set_position(0);
         Some(Arc::new(Mutex::new(pb)))
     }
     else { None };
@@ -204,7 +205,7 @@ fn main() {
                     }
                 };
                 let command = gen_command(&template, job, &loaded_wordlist, &wordlist_lengths);
-                execute_command(&command, args.no_output);
+                execute_command(&command, args.silent);
 
                 if let Some(ref pb) = progress_bar {
                     pb.lock().unwrap().inc(1);
