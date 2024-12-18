@@ -93,11 +93,11 @@ struct Cli {
     command: String,
     #[arg(short, long, default_value_t=10, help="Number of threads")]
     threads: usize,
-    #[arg(short, long, default_value=None, help="Show nth command that will be executed (0 indexed)")]
+    #[arg(long, default_value=None, help="Show nth command that will be executed (0 indexed)")]
     show: Option<usize>,
     #[arg(short, long, help="A file and an identifier used in command [example: abc.txt:foo]")]
     file: Vec<String>,
-    #[arg(long, help="Don't show command stdout or stderr")]
+    #[arg(short, long, help="Don't show command stdout or stderr")]
     silent: bool,
     #[arg(short, long, help="Enable progress bar")]
     progress: bool,
