@@ -13,3 +13,4 @@ keywords = ["parallel","linux"]
 clap = { version = "4.5.22", features = ["derive"] }
 colored = "2.1.0"
 indicatif = "0.17.9"
+shell-quote = { version = "0.7.1", features = ["bash"] }
